@@ -38,13 +38,25 @@ function readBinary(buf: Uint8Array): Float64Array {
 
 function readAscii(buf: Uint8Array): Float64Array {
   const tokens = new TextDecoder().decode(buf).trim().split(/\s+/);
-  // Skip the "solid <name>" header (the name may contain any word) up to the first facet.
-  let i = tokens.findIndex((t) => t.toLowerCase() === "facet");
-  if (i < 0) i = tokens.length;
   const coords: number[] = [];
-  for (; i < tokens.length; i++) {
+  // "solid <name>" and "endsolid <name>" carry free-form names (which may contain "vertex"),
+  // so only read vertices between the first "facet" of a solid and its "endsolid".
+  // Multiple solids in one file are all read into the same soup.
+  let mode: "header" | "body" | "trailer" = "header";
+  for (let i = 0; i < tokens.length; i++) {
     const tok = tokens[i].toLowerCase();
-    if (tok === "endsolid") break; // trailer repeats the solid name
+    if (mode === "header") {
+      if (tok === "facet") mode = "body";
+      continue;
+    }
+    if (mode === "trailer") {
+      if (tok === "solid") mode = "header";
+      continue;
+    }
+    if (tok === "endsolid") {
+      mode = "trailer";
+      continue;
+    }
     if (tok !== "vertex") continue;
     const xyz = [Number(tokens[i + 1]), Number(tokens[i + 2]), Number(tokens[i + 3])];
     if (xyz.some((n) => !Number.isFinite(n))) {

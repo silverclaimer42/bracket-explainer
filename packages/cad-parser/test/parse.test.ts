@@ -87,6 +87,15 @@ describe("STL edge cases", () => {
     expect(part.volume).toBeCloseTo(1000, 6);
   });
 
+  it("reads every solid in a multi-solid ASCII STL", () => {
+    const second = cubeTriangles(10).map((t) => t.map(([x, y, z]) => [x + 20, y, z])) as ReturnType<typeof cubeTriangles>;
+    const dec = new TextDecoder();
+    const text = dec.decode(toAsciiStl(cubeTriangles(10), "a vertex")) + dec.decode(toAsciiStl(second, "b"));
+    const part = parse(new TextEncoder().encode(text), "two.stl").geometry.parts[0];
+    expect(part.triangles.length / 3).toBe(24);
+    expect(part.volume).toBeCloseTo(2000, 6);
+  });
+
   it("parses ASCII STL with all records on one line", () => {
     const oneLine = new TextDecoder().decode(toAsciiStl(cubeTriangles(10))).replace(/\s+/g, " ");
     const part = parse(new TextEncoder().encode(oneLine), "cube.stl").geometry.parts[0];
