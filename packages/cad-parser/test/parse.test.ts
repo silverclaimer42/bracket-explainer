@@ -95,3 +95,13 @@ describe("binary STL validation", () => {
     expect(() => parse(buf, "bad.stl")).toThrow(/non-finite/);
   });
 });
+
+describe("vertex compaction", () => {
+  it("drops vertices only used by collapsed triangles", () => {
+    const tris = cubeTriangles(10);
+    tris.push([[0, 0, 0], [0, 0, 0], [500, 500, 500]]);
+    const part = parse(toAsciiStl(tris), "cube.stl").geometry.parts[0];
+    expect(part.vertices.length / 3).toBe(8);
+    expect(part.bbox).toEqual({ min: [0, 0, 0], max: [10, 10, 10] });
+  });
+});

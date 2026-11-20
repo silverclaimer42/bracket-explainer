@@ -51,11 +51,23 @@ export function indexTriangleSoup(soup: Float64Array | number[], tol = MERGE_TOL
     remap[i] = found;
   }
 
+  // Drop collapsed triangles, then keep only vertices still referenced so they don't skew the bounds.
+  const compact = new Map<number, number>();
+  const kept: number[] = [];
+  const keep = (v: number) => {
+    let i = compact.get(v);
+    if (i === undefined) {
+      i = kept.length / 3;
+      compact.set(v, i);
+      kept.push(vertices[3 * v], vertices[3 * v + 1], vertices[3 * v + 2]);
+    }
+    return i;
+  };
   for (let t = 0; t < remap.length; t += 3) {
     const a = remap[t], b = remap[t + 1], c = remap[t + 2];
-    if (a !== b && b !== c && a !== c) triangles.push(a, b, c);
+    if (a !== b && b !== c && a !== c) triangles.push(keep(a), keep(b), keep(c));
   }
-  return { vertices, triangles };
+  return { vertices: kept, triangles };
 }
 
 export interface MeshStats {
