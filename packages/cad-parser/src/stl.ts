@@ -35,7 +35,7 @@ function readBinary(buf: Uint8Array): Float64Array {
 function readAscii(buf: Uint8Array): Float64Array {
   const text = new TextDecoder().decode(buf);
   const coords: number[] = [];
-  const re = /vertex\s+(\S+)\s+(\S+)\s+(\S+)/gi;
+  const re = /^\s*vertex\s+(\S+)\s+(\S+)\s+(\S+)/gim;
   for (let m = re.exec(text); m; m = re.exec(text)) {
     const xyz = [Number(m[1]), Number(m[2]), Number(m[3])];
     if (xyz.some((n) => !Number.isFinite(n))) throw new Error(`Bad ASCII STL vertex: ${m[0]}`);

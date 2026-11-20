@@ -79,3 +79,11 @@ describe("L-bracket fixture", () => {
     expectValid(result);
   });
 });
+
+describe("STL edge cases", () => {
+  it("ignores 'vertex' in an ASCII solid name", () => {
+    const stl = new TextDecoder().decode(toAsciiStl(cubeTriangles(10), "my vertex part"));
+    const part = parse(new TextEncoder().encode(stl), "cube.stl").geometry.parts[0];
+    expect(part.volume).toBeCloseTo(1000, 6);
+  });
+});
