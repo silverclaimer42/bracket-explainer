@@ -58,3 +58,16 @@ Then open http://127.0.0.1:4173/bracket-explainer/. Leave `VITE_BASE_PATH` unset
 ## Where a generated narrative would plug in
 
 `src/narrative/NarrativeSource.ts` is the hook. v1 uses `staticNarrative`, which returns the pre-written steps and does not call the network. A later source can implement the same interface (sync or async) and be passed to `DemoProvider`. Keep each step's camera, explode, and load cues so the view still has something to follow.
+
+## v2 roadmap
+
+v2 is a plan only: four Devin sessions, coordinated through GitHub issues and pull requests, to turn this explainer into a browser-side CAD → mesh → linear static FEA → viewer pipeline. v1 was built with Cursor cloud agents and is already live at the GitHub Pages link above. **No Devin work has been done yet.**
+
+See [docs/v2-architecture.md](docs/v2-architecture.md) for the status, pipeline, folder ownership, JSON-schema contracts, coordination model, and validation plan.
+
+- [#3 CAD parser bot](https://github.com/silverclaimer42/bracket-explainer/issues/3): STEP/STL → normalised geometry + BOM JSON (`packages/cad-parser/`)
+- [#4 Meshing bot](https://github.com/silverclaimer42/bracket-explainer/issues/4): tetra mesh with refinement at bolt holes/fillets (`packages/mesher/`)
+- [#5 Solver bot](https://github.com/silverclaimer42/bracket-explainer/issues/5): linear static FEA in a web worker (`packages/solver/`)
+- [#6 Frontend bot](https://github.com/silverclaimer42/bracket-explainer/issues/6): wire results into the existing three.js viewer and customer one-pager (`src/`)
+
+Isamuddin reviews every PR. Do not merge without his OK.
