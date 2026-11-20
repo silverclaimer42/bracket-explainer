@@ -87,3 +87,11 @@ describe("STL edge cases", () => {
     expect(part.volume).toBeCloseTo(1000, 6);
   });
 });
+
+describe("binary STL validation", () => {
+  it("rejects non-finite coordinates", () => {
+    const buf = toBinaryStl(cubeTriangles(10));
+    new DataView(buf.buffer).setFloat32(84 + 12, NaN, true);
+    expect(() => parse(buf, "bad.stl")).toThrow(/non-finite/);
+  });
+});

@@ -27,7 +27,11 @@ function readBinary(buf: Uint8Array): Float64Array {
   const out = new Float64Array(count * 9);
   for (let t = 0; t < count; t++) {
     const base = 84 + t * 50 + 12; // skip normal
-    for (let k = 0; k < 9; k++) out[t * 9 + k] = dv.getFloat32(base + k * 4, true);
+    for (let k = 0; k < 9; k++) {
+      const n = dv.getFloat32(base + k * 4, true);
+      if (!Number.isFinite(n)) throw new Error(`Binary STL has a non-finite coordinate in triangle ${t}`);
+      out[t * 9 + k] = n;
+    }
   }
   return out;
 }
