@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/silverclaimer42/bracket-explainer/schemas/bom.schema.json",
+  "title": "Bill of materials",
+  "description": "BOM emitted by the CAD parser (packages/cad-parser) and consumed by the frontend. partId refers to parts[].id in the matching geometry document.",
+  "type": "object",
+  "required": ["items"],
+  "additionalProperties": false,
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/item" }
+    }
+  },
+  "$defs": {
+    "vec3": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "item": {
+      "type": "object",
+      "required": ["partId", "name", "quantity", "volume_mm3", "bbox_mm"],
+      "additionalProperties": false,
+      "properties": {
+        "partId": { "type": "string", "minLength": 1 },
+        "name": { "type": "string" },
+        "quantity": { "type": "integer", "minimum": 1 },
+        "material": { "type": ["string", "null"] },
+        "volume_mm3": {
+          "description": "Volume of one part; null when the source mesh is not watertight.",
+          "type": ["number", "null"],
+          "minimum": 0
+        },
+        "bbox_mm": {
+          "type": "object",
+          "required": ["min", "max"],
+          "additionalProperties": false,
+          "properties": {
+            "min": { "$ref": "#/$defs/vec3" },
+            "max": { "$ref": "#/$defs/vec3" }
+          }
+        }
+      }
+    }
+  }
+}
