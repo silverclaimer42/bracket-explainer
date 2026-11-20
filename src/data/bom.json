@@ -1,0 +1,34 @@
+[
+  {
+    "id": "base-plate",
+    "partNo": "DS-BP-180132-010",
+    "name": "Base plate",
+    "material": "Steel S355, machined",
+    "qty": 1,
+    "unitMassKg": 1.84
+  },
+  {
+    "id": "l-bracket",
+    "partNo": "DS-LB-076088-008",
+    "name": "L-bracket",
+    "material": "Aluminium 6061-T6",
+    "qty": 1,
+    "unitMassKg": 0.23
+  },
+  {
+    "id": "washer",
+    "partNo": "ISO 7089 — M8",
+    "name": "Plain washer",
+    "material": "Steel, zinc plated",
+    "qty": 4,
+    "unitMassKg": 0.002
+  },
+  {
+    "id": "bolt",
+    "partNo": "ISO 4017 — M8×20",
+    "name": "Hex head bolt",
+    "material": "Steel 8.8, black oxide",
+    "qty": 4,
+    "unitMassKg": 0.012
+  }
+]
