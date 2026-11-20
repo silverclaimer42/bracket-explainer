@@ -86,6 +86,13 @@ describe("STL edge cases", () => {
     const part = parse(new TextEncoder().encode(stl), "cube.stl").geometry.parts[0];
     expect(part.volume).toBeCloseTo(1000, 6);
   });
+
+  it("parses ASCII STL with all records on one line", () => {
+    const oneLine = new TextDecoder().decode(toAsciiStl(cubeTriangles(10))).replace(/\s+/g, " ");
+    const part = parse(new TextEncoder().encode(oneLine), "cube.stl").geometry.parts[0];
+    expect(part.volume).toBeCloseTo(1000, 6);
+    expect(part.watertight).toBe(true);
+  });
 });
 
 describe("binary STL validation", () => {

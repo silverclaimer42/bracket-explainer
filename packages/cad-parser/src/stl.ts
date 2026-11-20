@@ -37,13 +37,21 @@ function readBinary(buf: Uint8Array): Float64Array {
 }
 
 function readAscii(buf: Uint8Array): Float64Array {
-  const text = new TextDecoder().decode(buf);
+  const tokens = new TextDecoder().decode(buf).trim().split(/\s+/);
+  // Skip the "solid <name>" header (the name may contain any word) up to the first facet.
+  let i = tokens.findIndex((t) => t.toLowerCase() === "facet");
+  if (i < 0) i = tokens.length;
   const coords: number[] = [];
-  const re = /^\s*vertex\s+(\S+)\s+(\S+)\s+(\S+)/gim;
-  for (let m = re.exec(text); m; m = re.exec(text)) {
-    const xyz = [Number(m[1]), Number(m[2]), Number(m[3])];
-    if (xyz.some((n) => !Number.isFinite(n))) throw new Error(`Bad ASCII STL vertex: ${m[0]}`);
+  for (; i < tokens.length; i++) {
+    const tok = tokens[i].toLowerCase();
+    if (tok === "endsolid") break; // trailer repeats the solid name
+    if (tok !== "vertex") continue;
+    const xyz = [Number(tokens[i + 1]), Number(tokens[i + 2]), Number(tokens[i + 3])];
+    if (xyz.some((n) => !Number.isFinite(n))) {
+      throw new Error(`Bad ASCII STL vertex: ${tokens.slice(i, i + 4).join(" ")}`);
+    }
     coords.push(...xyz);
+    i += 3;
   }
   if (coords.length % 9 !== 0) throw new Error("ASCII STL vertex count is not a multiple of 3");
   return Float64Array.from(coords);
