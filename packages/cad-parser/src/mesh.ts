@@ -91,6 +91,9 @@ export function computeStats({ vertices, triangles }: IndexedMesh): MeshStats {
     max.fill(0);
   }
 
+  // Signed volume is translation-invariant for closed meshes; measuring from the bbox centre
+  // avoids cancellation error for parts far from the origin.
+  const ox = (min[0] + max[0]) / 2, oy = (min[1] + max[1]) / 2, oz = (min[2] + max[2]) / 2;
   let area = 0;
   let vol6 = 0;
   const edges = new Map<string, number>();
@@ -108,8 +111,11 @@ export function computeStats({ vertices, triangles }: IndexedMesh): MeshStats {
     const vx = cx - ax, vy = cy - ay, vz = cz - az;
     const nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
     area += 0.5 * Math.hypot(nx, ny, nz);
-    // a . (b x c)
-    vol6 += ax * (by * cz - bz * cy) + ay * (bz * cx - bx * cz) + az * (bx * cy - by * cx);
+    // a' . (b' x c') with p' = p - origin
+    const px = ax - ox, py = ay - oy, pz = az - oz;
+    const qx = bx - ox, qy = by - oy, qz = bz - oz;
+    const rx = cx - ox, ry = cy - oy, rz = cz - oz;
+    vol6 += px * (qy * rz - qz * ry) + py * (qz * rx - qx * rz) + pz * (qx * ry - qy * rx);
     addEdge(triangles[t], triangles[t + 1]);
     addEdge(triangles[t + 1], triangles[t + 2]);
     addEdge(triangles[t + 2], triangles[t]);

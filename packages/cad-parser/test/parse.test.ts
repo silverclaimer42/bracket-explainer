@@ -105,3 +105,12 @@ describe("vertex compaction", () => {
     expect(part.bbox).toEqual({ min: [0, 0, 0], max: [10, 10, 10] });
   });
 });
+
+describe("precision", () => {
+  it("computes volume accurately for a part far from the origin", () => {
+    const offset = 1e7;
+    const tris = cubeTriangles(10).map((t) => t.map((p) => p.map((n) => n + offset))) as ReturnType<typeof cubeTriangles>;
+    const part = parse(toAsciiStl(tris), "far.stl").geometry.parts[0];
+    expect(Math.abs(part.volume! - 1000)).toBeLessThanOrEqual(1e-6);
+  });
+});
