@@ -33,15 +33,27 @@ npm run preview
 
 If WebGL is unavailable, the 3D view is replaced with a short message. The story, the BOM, and the one-pager still open.
 
-## Subpath hosting
+## GitHub Pages
 
-Vite's `base` is read from `VITE_BASE_PATH` at dev and build time. Leave it unset for local use. For a host that serves the app under a subpath:
+The live app is [https://silverclaimer42.github.io/bracket-explainer/](https://silverclaimer42.github.io/bracket-explainer/).
+
+`.github/workflows/deploy-pages.yml` publishes `dist/` on every push to `main`, and it can also be run by hand from the Actions tab. The build sets `VITE_BASE_PATH=/bracket-explainer/` so scripts, styles, fonts, and `favicon.svg` load under that subpath.
+
+One-time setup in the repository, before the first successful deploy:
+
+1. Open **Settings → Pages**.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+
+If a deploy already failed because Pages was not enabled yet, re-run **Deploy GitHub Pages** from the Actions tab after saving that setting.
+
+To preview the same subpath locally:
 
 ```bash
 VITE_BASE_PATH=/bracket-explainer/ npm run build
+VITE_BASE_PATH=/bracket-explainer/ npm run preview
 ```
 
-See `.env.example`. This repo does not include a deployment workflow or GitHub Pages config.
+Then open http://127.0.0.1:4173/bracket-explainer/. Leave `VITE_BASE_PATH` unset for normal local development at `/`. See `.env.example`.
 
 ## Where a generated narrative would plug in
 
