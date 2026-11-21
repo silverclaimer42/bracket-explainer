@@ -1,7 +1,7 @@
 [
   {
     "id": "base-plate",
-    "partNo": "DS-BP-180132-010",
+    "partNo": "NB-BP-180132-010",
     "name": "Base plate",
     "material": "Steel S355, machined",
     "qty": 1,
@@ -9,7 +9,7 @@
   },
   {
     "id": "l-bracket",
-    "partNo": "DS-LB-076088-008",
+    "partNo": "NB-LB-076088-008",
     "name": "L-bracket",
     "material": "Aluminium 6061-T6",
     "qty": 1,
